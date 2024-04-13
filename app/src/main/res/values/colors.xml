@@ -13,4 +13,7 @@
 
     <color name="grey_01b">#ACACAC</color>
     <color name="grey_02b">#1C2327</color>
+
+    <color name="glight">#676767</color>
+    <color name="gdark">#9b9ba3</color>
 </resources>

@@ -81,7 +81,8 @@
                     android:layout_margin="10dp"
                     app:cardBackgroundColor="?attr/cardBgColor"
                     app:cardCornerRadius="25dp"
-                    app:cardElevation="1dp">
+                    app:cardElevation="1dp"
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -107,7 +108,8 @@
                                 android:paddingRight="10dp"
                                 android:text="@string/enable"
                                 android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                               />
 
                         </LinearLayout>
 
@@ -119,7 +121,7 @@
 
 
                             <TextView
-                                android:id="@+id/overlaytext"
+                                android:id="@+id/OT"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -131,7 +133,7 @@
                                 android:textStyle="bold" />
 
                             <Spinner
-                                android:id="@+id/spinner"
+                                android:id="@+id/overlayTypeSpinner"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -150,7 +152,7 @@
 
 
                             <TextView
-                                android:id="@+id/fontType"
+                                android:id="@+id/F"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -181,7 +183,7 @@
 
 
                             <TextView
-                                android:id="@+id/fontSize"
+                                android:id="@+id/FS"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -209,7 +211,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/card_03"
+                    android:id="@+id/card_02"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_margin="10dp"
@@ -237,7 +239,7 @@
                             android:src="?attr/stopwatch" />
 
                         <EditText
-                            android:id="@+id/editTextNumber"
+                            android:id="@+id/timeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -252,6 +254,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/M"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -266,6 +269,7 @@
 
 
                        <TextView
+                           android:id="@+id/start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -283,7 +287,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/card_04"
+                    android:id="@+id/card_03"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_margin="10dp"
@@ -311,6 +315,7 @@
                             android:src="?attr/t" />
 
                         <EditText
+                            android:id="@+id/overlayText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -326,13 +331,14 @@
                     </LinearLayout>
 
                         <TextView
+                            android:id="@+id/save"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_margin="12dp"
                             android:paddingBottom="4dp"
                             android:fontFamily="@font/comfortaa_bold"
-                            android:text="@string/show"
+                            android:text="@string/save"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:background="?attr/btnColor"
@@ -343,7 +349,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/card_05"
+                    android:id="@+id/card_04"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
                     android:layout_margin="10dp"
@@ -357,6 +363,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/P"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -397,7 +404,7 @@
                                 android:progress="3" />
 
                             <TextView
-                                android:id="@+id/xVal"
+                                android:id="@+id/xV"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -430,7 +437,7 @@
                                 android:textStyle="bold" />
 
                             <SeekBar
-                                android:id="@+id/seekBar"
+                                android:id="@+id/ySeekBar"
                                 style="@style/Widget.AppCompat.SeekBar.Discrete"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -440,7 +447,7 @@
                                 android:progress="3" />
 
                             <TextView
-                                android:id="@+id/yVal"
+                                android:id="@+id/yV"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
