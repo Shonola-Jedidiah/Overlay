@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Overlay" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <item name="colorPrimary">@color/grey_02</item>
+        <item name="colorPrimaryVariant">@color/grey_02</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="info">@drawable/info_light</item>
+        <item name="caution">@drawable/caution_light</item>
+        <item name="stopwatch">@drawable/stopwatch_light</item>
+        <item name="t">@drawable/t_light</item>
+        <item name="cardBgColor">@color/grey_02</item>
+        <item name="btnColor">@color/grey_02b</item>
+    </style>
+</resources>

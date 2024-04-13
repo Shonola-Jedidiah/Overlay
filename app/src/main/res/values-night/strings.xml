@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permissions">Click to grant app permission</string>
+    <string name="overlay_type">Overlay Type</string>
+    <string name="enable">Enable</string>
+    <string name="start">\tStart\t</string>
+    <string name="overlay_text">Text to Overlay</string>
+    <string name="show">\tShow\t</string>
+    <string name="position">Position</string>
+    <string name="X">X</string>
+    <string name="xvalue">10%</string>
+    <string name="Y">Y</string>
+    <string name="yvalue">20%</string>
+    <string name="font_type">Font</string>
+</resources>

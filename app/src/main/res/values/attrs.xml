@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="customAttrs">
+        <attr name="info" format="reference" />
+        <attr name="cardBgColor" format="reference"/>
+        <attr name="caution" format="reference"/>
+        <attr name="clock" format="reference"/>
+        <attr name="stopwatch" format="reference"/>
+        <attr name="t" format="reference"/>
+        <attr name="btnColor" format="reference"/>
+    </declare-styleable>
+
+</resources>

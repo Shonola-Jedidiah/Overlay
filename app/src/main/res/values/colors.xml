@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="cream_01">#FFFDD0</color>
+    <color name="cream_01_inv">#002F2F</color>
+
+    <color name="cream_02">#F9E4BC</color>
+    <color name="cream_02_inv">#061B42</color>
+
+    <color name="grey_01">#D3D3D3</color>
+    <color name="grey_02">#2A3439</color>
+
+    <color name="grey_01b">#ACACAC</color>
+    <color name="grey_02b">#1C2327</color>
+</resources>
