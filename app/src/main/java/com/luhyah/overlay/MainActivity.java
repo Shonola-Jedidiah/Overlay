@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -21,11 +24,15 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private androidx.cardview.widget.CardView card0;
+    private androidx.cardview.widget.CardView card2;
+    private androidx.cardview.widget.CardView card3;
     private Switch enable;
     private Spinner overlayTpeSpinner,fontSizeSpinner,fontSpinner;
     private EditText timeText, overlayText;
     private TextView start, save;
     private SeekBar xSeekBar, ySeekBar;
+    @SuppressLint("ResourceType")
+
 
 private int reload = 1;
 
@@ -39,6 +46,8 @@ private int reload = 1;
         setContentView(R.layout.activity_main);
 
         card0 = findViewById(R.id.card_00);
+        card2 = findViewById(R.id.card_02);
+        card3 = findViewById(R.id.card_03);
 
         enable = findViewById(R.id.enable);
         overlayTpeSpinner = findViewById(R.id.overlayTypeSpinner);
@@ -61,11 +70,20 @@ private int reload = 1;
         xVal = findViewById(R.id.xV);
         yVal = findViewById(R.id.yV);
 
+        overlayTpeSpinner.setEnabled(false);
+        fontSpinner.setEnabled(false);
+        fontSizeSpinner.setEnabled(false);
+        timeText.setEnabled(false);
+        overlayText.setEnabled(false);
+        xSeekBar.setEnabled(false);
+        ySeekBar.setEnabled(false);
+
         if(checkIfPermissionIsGranted()){
             card0.setVisibility(View.GONE);
         }
         else{
-                enable.setEnabled(false);
+                enable.setChecked(false);
+            enable.setEnabled(false);
                 overlayTpeSpinner.setEnabled(false);
                 fontSpinner.setEnabled(false);
                 fontSizeSpinner.setEnabled(false);
@@ -74,7 +92,8 @@ private int reload = 1;
                 xSeekBar.setEnabled(false);
                 ySeekBar.setEnabled(false);
 
-                save.setTextColor(Color.rgb(129,129,133));
+           /*     save.setTextColor(Color.rgb(129,129,133));
+
                 start.setTextColor(Color.rgb(129,129,133));
                 OT.setTextColor(Color.rgb(129,129,133));
                 F.setTextColor(Color.rgb(129,129,133));
@@ -84,7 +103,7 @@ private int reload = 1;
                 X.setTextColor(Color.rgb(129,129,133));
                 Y.setTextColor(Color.rgb(129,129,133));
                 xVal.setTextColor(Color.rgb(129,129,133));
-                yVal.setTextColor(Color.rgb(129,129,133));
+                yVal.setTextColor(Color.rgb(129,129,133));*/
 
         }
 
@@ -94,6 +113,50 @@ private int reload = 1;
                 grantPermission();
             }
         });
+
+
+     enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+         @Override
+         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(!b){
+                    overlayTpeSpinner.setEnabled(false);
+                    fontSpinner.setEnabled(false);
+                    fontSizeSpinner.setEnabled(false);
+                    timeText.setEnabled(false);
+                    overlayText.setEnabled(false);
+                    xSeekBar.setEnabled(false);
+                    ySeekBar.setEnabled(false);
+                }
+                else {
+                    overlayTpeSpinner.setEnabled(true);
+                    fontSpinner.setEnabled(true);
+                    fontSizeSpinner.setEnabled(true);
+                    timeText.setEnabled(true);
+                    overlayText.setEnabled(true);
+                    xSeekBar.setEnabled(true);
+                    ySeekBar.setEnabled(true);
+
+                }
+         }
+     });
+
+        ArrayAdapter<CharSequence> overlayType = ArrayAdapter.createFromResource(this,R.array.overlayType, android.R.layout.simple_spinner_item);
+        overlayType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        overlayTpeSpinner.setAdapter(overlayType);
+
+        ArrayAdapter<CharSequence> font = ArrayAdapter.createFromResource(this,R.array.fonts, android.R.layout.simple_spinner_item);
+        font.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fontSpinner.setAdapter(font);
+
+        ArrayAdapter<CharSequence> fontSize = ArrayAdapter.createFromResource(this,R.array.fontSize, android.R.layout.simple_spinner_item);
+        fontSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fontSizeSpinner.setAdapter(fontSize);
+
+
+    if(overlayTpeSpinner.getSelectedItem().toString() == "TIMER"){
+        Log.d("SPINNER", "onCreate: SPINNER TEXT");
+    }
+
     }
 
     private static int REQUEST_CODE = 1;
@@ -111,7 +174,6 @@ private int reload = 1;
             }
         }
         return false;
-
     }
 
 
@@ -120,19 +182,19 @@ private int reload = 1;
         super.onResume();
         if(checkIfPermissionIsGranted()){
             card0.setVisibility(View.GONE);
-
             enable.setEnabled(true);
-            overlayTpeSpinner.setEnabled(true);
-            fontSpinner.setEnabled(true);
-            fontSizeSpinner.setEnabled(true);
-            timeText.setEnabled(true);
-            overlayText.setEnabled(true);
-            xSeekBar.setEnabled(true);
-            ySeekBar.setEnabled(true);
-
-            Log.d("ERROR", "onResume: RESUME WAS CALLLED");
         }
         else {
+            card0.setVisibility(View.VISIBLE);
+            enable.setChecked(false);
+            enable.setEnabled(false);
+            overlayTpeSpinner.setEnabled(false);
+            fontSpinner.setEnabled(false);
+            fontSizeSpinner.setEnabled(false);
+            timeText.setEnabled(false);
+            overlayText.setEnabled(false);
+            xSeekBar.setEnabled(false);
+            ySeekBar.setEnabled(false);
 
         }
     }

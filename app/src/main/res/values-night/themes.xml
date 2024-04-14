@@ -11,5 +11,7 @@
         <item name="t">@drawable/t_light</item>
         <item name="cardBgColor">@color/grey_02</item>
         <item name="btnColor">@color/grey_02b</item>
+
+        <item name="disabled">@color/gdark</item>
     </style>
 </resources>

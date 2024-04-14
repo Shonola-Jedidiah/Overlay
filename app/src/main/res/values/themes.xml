@@ -11,6 +11,8 @@
         <item name="t">@drawable/t_dark</item>
         <item name="btnColor">@color/grey_01b</item>
         <item name="cardBgColor">@color/grey_01</item>
+        <item name="disabled">@color/glight</item>
+
     </style>
 
     <style name="Theme.Overlay" parent="Base.Theme.Overlay" />
