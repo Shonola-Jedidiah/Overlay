@@ -9,7 +9,7 @@
         <attr name="t" format="reference"/>
         <attr name="btnColor" format="reference"/>
         <attr name="disabled" format="color"/>
-
++
     </declare-styleable>
 
 </resources>

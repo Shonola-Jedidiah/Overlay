@@ -1,16 +1,13 @@
 package com.luhyah.overlay;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +17,9 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import java.util.Objects;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText timeText, overlayText;
     private TextView start, save;
     private SeekBar xSeekBar, ySeekBar;
+
+    private String overlayVal;
+    private  int fontSizeVal;
+    private String fontVal;
     @SuppressLint("ResourceType")
 
 
@@ -153,9 +157,90 @@ private int reload = 1;
         fontSizeSpinner.setAdapter(fontSize);
 
 
-    if(overlayTpeSpinner.getSelectedItem().toString() == "TIMER"){
-        Log.d("SPINNER", "onCreate: SPINNER TEXT");
-    }
+
+
+      overlayTpeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+              overlayVal = overlayType.getItem(i).toString();
+              if(Objects.equals(overlayVal, "TIMER")){
+                  card2.setVisibility(View.VISIBLE);
+                  card3.setVisibility(View.GONE);
+              }
+              else  {
+                  card3.setVisibility(View.VISIBLE);
+                  card2.setVisibility(View.GONE);
+              }
+          }
+          @Override
+          public void onNothingSelected(AdapterView<?> adapterView) {
+          }
+      });
+
+      fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+              fontSizeVal = Integer.getInteger(fontSize.getItem(i).toString());
+              //Switch Statement  to read font sizes and implement necessary changes
+              switch (fontSizeVal){
+                  case 6:
+                      //
+                        break;
+                  case 7:
+                      //
+                      break;
+                  case 8:
+                      //
+                      break;
+                  case 9:
+                      //
+                      break;
+                  case 10:
+                      //
+                      break;
+                  case 11:
+                      //
+                      break;
+                  case 12:
+                      //
+                      break;
+                  default:
+                      //
+              }
+
+          }
+          @Override
+          public void onNothingSelected(AdapterView<?> adapterView) {
+
+          }
+      });
+
+      fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+              fontVal = font.getItem(i).toString();
+              //Switch Statement to read Fonts and implement neccessary changes
+              switch (fontVal){
+                  case "COMFORTAA":
+                      //
+                      break;
+                  case "AMITA":
+                      //
+                      break;
+                  case "CALIBRI":
+                      break;
+                  default:
+                      //
+
+              }
+          }
+
+          @Override
+          public void onNothingSelected(AdapterView<?> adapterView) {
+
+          }
+      });
+
 
     }
 

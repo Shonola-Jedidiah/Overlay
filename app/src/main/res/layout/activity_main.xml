@@ -132,6 +132,8 @@
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
 
+
+
                             <Spinner
                                 android:id="@+id/overlayTypeSpinner"
                                 android:layout_width="wrap_content"
