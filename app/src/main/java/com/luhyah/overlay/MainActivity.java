@@ -19,9 +19,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Objects;
 
 
@@ -231,6 +234,11 @@ private int reload = 1;
           }
       });
 
+
+        if (readText() != null) {
+            overlayText.setText(readText());
+        }
+
     }
 
 //Write Overlay Text to Memory
@@ -248,8 +256,9 @@ private int reload = 1;
                 if (fileOutputStream != null){
                     try {
                         fileOutputStream.write(overlayTextString.getBytes());
-                        fileOutputStream.close();
                         Toast.makeText(this, "SAVED", Toast.LENGTH_SHORT).show();
+                        fileOutputStream.close();
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -259,6 +268,33 @@ private int reload = 1;
         else {
             Toast.makeText(this, "TEXT TOO SHORT", Toast.LENGTH_SHORT).show();
         }
+  }
+
+  public String readText(){
+      FileInputStream fileInputStream = null;
+
+      try {
+          fileInputStream = openFileInput(overlayTextFileName);
+          InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+          BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+          StringBuilder stringBuilder = new StringBuilder();
+          String placeHolder;
+          while ((placeHolder = bufferedReader.readLine()) != null) {
+              stringBuilder.append(placeHolder).append("\n");
+          }
+          return  stringBuilder.toString();
+      } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
+   finally {
+          if(fileInputStream != null){
+              try {
+                  fileInputStream.close();
+              } catch (IOException e) {
+                  throw new RuntimeException(e);
+              }
+          }
+      }
   }
 
     private static int REQUEST_CODE = 1;
