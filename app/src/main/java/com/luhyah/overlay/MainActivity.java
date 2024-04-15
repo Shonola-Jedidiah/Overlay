@@ -17,8 +17,13 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Objects;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String overlayVal;
     private  int fontSizeVal;
     private String fontVal;
+    private String overlayTextFileName = "OVERLAYTEXT";
     @SuppressLint("ResourceType")
 
 
@@ -96,19 +102,6 @@ private int reload = 1;
                 xSeekBar.setEnabled(false);
                 ySeekBar.setEnabled(false);
 
-           /*     save.setTextColor(Color.rgb(129,129,133));
-
-                start.setTextColor(Color.rgb(129,129,133));
-                OT.setTextColor(Color.rgb(129,129,133));
-                F.setTextColor(Color.rgb(129,129,133));
-                FS.setTextColor(Color.rgb(129,129,133));
-                P.setTextColor(Color.rgb(129,129,133));
-                M.setTextColor(Color.rgb(129,129,133));
-                X.setTextColor(Color.rgb(129,129,133));
-                Y.setTextColor(Color.rgb(129,129,133));
-                xVal.setTextColor(Color.rgb(129,129,133));
-                yVal.setTextColor(Color.rgb(129,129,133));*/
-
         }
 
         card0.setOnClickListener(new View.OnClickListener() {
@@ -156,9 +149,6 @@ private int reload = 1;
         fontSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fontSizeSpinner.setAdapter(fontSize);
 
-
-
-
       overlayTpeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
           @Override
           public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -180,7 +170,7 @@ private int reload = 1;
       fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
           @Override
           public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-              fontSizeVal = Integer.getInteger(fontSize.getItem(i).toString());
+              fontSizeVal = Integer.parseInt(fontSize.getItem(i).toString());
               //Switch Statement  to read font sizes and implement necessary changes
               switch (fontSizeVal){
                   case 6:
@@ -241,8 +231,35 @@ private int reload = 1;
           }
       });
 
-
     }
+
+//Write Overlay Text to Memory
+  public void save(View view){
+        String overlayTextString = overlayText.getText().toString();
+
+      FileOutputStream fileOutputStream = null;
+        if(overlayTextString.length() > 2) {
+            try {
+                 fileOutputStream = openFileOutput(overlayTextFileName, MODE_PRIVATE);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            finally{
+                if (fileOutputStream != null){
+                    try {
+                        fileOutputStream.write(overlayTextString.getBytes());
+                        fileOutputStream.close();
+                        Toast.makeText(this, "SAVED", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        else {
+            Toast.makeText(this, "TEXT TOO SHORT", Toast.LENGTH_SHORT).show();
+        }
+  }
 
     private static int REQUEST_CODE = 1;
 
