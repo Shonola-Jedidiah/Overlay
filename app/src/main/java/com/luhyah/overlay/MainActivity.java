@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -45,10 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private String fontVal;
     private String overlayTextFileName = "OVERLAYTEXT";
     @SuppressLint("ResourceType")
-
-
 private int reload = 1;
 
+    private SharedPreferences VALUES = getSharedPreferences("savedValues", MODE_PRIVATE);
     private TextView OT, F, FS, P, M, X, Y, xVal, yVal;
 
 
@@ -58,30 +59,9 @@ private int reload = 1;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        card0 = findViewById(R.id.card_00);
-        card2 = findViewById(R.id.card_02);
-        card3 = findViewById(R.id.card_03);
 
-        enable = findViewById(R.id.enable);
-        overlayTpeSpinner = findViewById(R.id.overlayTypeSpinner);
-        fontSpinner = findViewById(R.id.fontSpinner);
-        fontSizeSpinner = findViewById(R.id.fontSizeSpinner);
-        timeText = findViewById(R.id.timeText);
-        start = findViewById(R.id.start);
-        overlayText = findViewById(R.id.overlayText);
-        save = findViewById(R.id.save);
-        xSeekBar = findViewById(R.id.xSeekBar);
-        ySeekBar = findViewById(R.id.ySeekBar);
-
-        OT = findViewById(R.id.OT);
-        F = findViewById(R.id.F);
-        FS = findViewById(R.id.FS);
-        P = findViewById(R.id.P);
-        M = findViewById(R.id.M);
-        X = findViewById(R.id.X);
-        Y = findViewById(R.id.Y);
-        xVal = findViewById(R.id.xV);
-        yVal = findViewById(R.id.yV);
+        initializtion();
+        checkPreferences();
 
         overlayTpeSpinner.setEnabled(false);
         fontSpinner.setEnabled(false);
@@ -334,6 +314,46 @@ private int reload = 1;
             xSeekBar.setEnabled(false);
             ySeekBar.setEnabled(false);
 
+        }
+    }
+
+    private void initializtion(){
+        card0 = findViewById(R.id.card_00);
+        card2 = findViewById(R.id.card_02);
+        card3 = findViewById(R.id.card_03);
+
+        enable = findViewById(R.id.enable);
+        overlayTpeSpinner = findViewById(R.id.overlayTypeSpinner);
+        fontSpinner = findViewById(R.id.fontSpinner);
+        fontSizeSpinner = findViewById(R.id.fontSizeSpinner);
+        timeText = findViewById(R.id.timeText);
+        start = findViewById(R.id.start);
+        overlayText = findViewById(R.id.overlayText);
+        save = findViewById(R.id.save);
+        xSeekBar = findViewById(R.id.xSeekBar);
+        ySeekBar = findViewById(R.id.ySeekBar);
+
+        OT = findViewById(R.id.OT);
+        F = findViewById(R.id.F);
+        FS = findViewById(R.id.FS);
+        P = findViewById(R.id.P);
+        M = findViewById(R.id.M);
+        X = findViewById(R.id.X);
+        Y = findViewById(R.id.Y);
+        xVal = findViewById(R.id.xV);
+        yVal = findViewById(R.id.yV);
+    }
+
+    private void checkPreferences(){
+        Map<String, ?> allValues = VALUES.getAll();
+        if(allValues.isEmpty()){
+            overlayTpeSpinner.setEnabled(false);
+            fontSpinner.setEnabled(false);
+            fontSizeSpinner.setEnabled(false);
+            timeText.setEnabled(false);
+            overlayText.setEnabled(false);
+            xSeekBar.setEnabled(false);
+            ySeekBar.setEnabled(false);
         }
     }
 }
