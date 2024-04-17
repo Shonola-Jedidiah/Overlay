@@ -15,5 +15,5 @@
     <string name="yvalue">20%</string>
     <string name="font_type">Font</string>
     <string name="fontSize">Font Size</string>
-    <string name="SharedPref">com.luhyah.overlay.preference_file_key</string>
+
 </resources>

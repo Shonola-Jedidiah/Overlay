@@ -10,6 +10,7 @@ package com.luhyah.overlay;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -34,7 +35,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,18 +47,17 @@ public class MainActivity extends AppCompatActivity {
     private EditText timeText, overlayText;
     private TextView start, save;
     private SeekBar xSeekBar, ySeekBar;
+    private String SharedPref = "com.luhyah.overlay.preference_file_key";
 
-
-    private int fontSizeVal , enabledVal;
-    private String fontVal, overlayTypeVal;
+    private int fontSizeVal , enabledVal, overlayTypeVal, fontVal;
     private String overlayTextFileName = "OVERLAYTEXT";
     @SuppressLint("ResourceType")
     private int reload = 1;
 
-    private SharedPreferences VALUES = getSharedPreferences(getString(R.string.SharedPref), MODE_PRIVATE);
-    private SharedPreferences.Editor valuesEditor = VALUES.edit();
-    private TextView OT, F, FS, P, M, X, Y, xVal, yVal;
+//    Context context = this;
+    private SharedPreferences VALUES ;
 
+    private TextView OT, F, FS, P, M, X, Y, xVal, yVal;
 
     //=============================SHARED PREFERENCE VALUES HOLDERS=================================//
     private int xBarValue, yBarValue;
@@ -70,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        VALUES = getSharedPreferences(SharedPref, MODE_PRIVATE);
         /*==========================================================================*/
         initialization();
-      //  checkPreferences();
+      checkNLoadPreferences();
         /*==========================================================================*/
 
         if (checkIfPermissionIsGranted()) {
@@ -139,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
         overlayTpeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                overlayTypeVal = overlayType.getItem(i).toString();
-                if (Objects.equals(overlayTypeVal, "TIMER")) {
+                overlayTypeVal = i;
+                if (i == 0) {
                     card2.setVisibility(View.VISIBLE);
                     card3.setVisibility(View.GONE);
-                } else {
+                } else if(i == 1){
                     card3.setVisibility(View.VISIBLE);
                     card2.setVisibility(View.GONE);
                 }
@@ -157,29 +156,29 @@ public class MainActivity extends AppCompatActivity {
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                fontSizeVal = Integer.parseInt(fontSize.getItem(i).toString());
+                fontSizeVal = i;
                 //Switch Statement  to read font sizes and implement necessary changes
                 switch (fontSizeVal) {
+                    case 0:
+                        //6
+                        break;
+                    case 1:
+                        //7
+                        break;
+                    case 2:
+                        //8
+                        break;
+                    case 3:
+                        //9
+                        break;
+                    case 4:
+                        //10
+                        break;
+                    case 5:
+                        //11
+                        break;
                     case 6:
-                        //
-                        break;
-                    case 7:
-                        //
-                        break;
-                    case 8:
-                        //
-                        break;
-                    case 9:
-                        //
-                        break;
-                    case 10:
-                        //
-                        break;
-                    case 11:
-                        //
-                        break;
-                    case 12:
-                        //
+                        //12
                         break;
                     default:
                         //
@@ -196,16 +195,16 @@ public class MainActivity extends AppCompatActivity {
         fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                fontVal = font.getItem(i).toString();
+                fontVal = i;
                 //Switch Statement to read Fonts and implement neccessary changes
                 switch (fontVal) {
-                    case "COMFORTAA":
+                    case 0:
                         //
                         break;
-                    case "AMITA":
+                    case 1:
                         //
                         break;
-                    case "CALIBRI":
+                    case 2:
                         break;
                     default:
                         //
@@ -222,7 +221,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (readText() != null) {
             overlayText.setText(readText());
+        }else {
+            overlayText.setText("Input Text to Overlay");
         }
+
 
         xSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -347,6 +349,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        savePreferences();
+    }
+
     private void initialization() {
         card0 = findViewById(R.id.card_00);
         card2 = findViewById(R.id.card_02);
@@ -382,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
         ySeekBar.setEnabled(false);
     }
 
-    private void checkPreferences() {
+    private void checkNLoadPreferences() {
         Map<String, ?> allValues = VALUES.getAll();
         if (allValues.isEmpty()) {
             overlayTpeSpinner.setEnabled(false);
@@ -392,14 +400,29 @@ public class MainActivity extends AppCompatActivity {
             overlayText.setEnabled(false);
             xSeekBar.setEnabled(false);
             ySeekBar.setEnabled(false);
+        } else {
+                ySeekBar.setProgress(VALUES.getInt("Y_BAR_VALUE", 0));
+                xSeekBar.setProgress( VALUES.getInt("X_BAR_VALUE", 0));
+               overlayTpeSpinner.setSelection((VALUES.getInt("OVERLAY_TYPE_VALUE", 0)));
+                fontSpinner.setSelection(VALUES.getInt("FONT_VALUE", 0));
+                fontSizeSpinner.setSelection(VALUES.getInt("FONT_SIZE_VALUE", 0));
+
+                if(VALUES.getInt("ENABLE_VALUE", 0)==0){
+                    enable.setChecked(false);
+                }else {
+                    enable.setChecked(true);
+                }
         }
     }
 
     private void savePreferences() {
+         SharedPreferences.Editor valuesEditor = VALUES.edit();
         valuesEditor.putInt("Y_BAR_VALUE", yBarValue);
         valuesEditor.putInt("X_BAR_VALUE", xBarValue);
         valuesEditor.putInt("ENABLE_VALUE", enabledVal);
-
-
+        valuesEditor.putInt("OVERLAY_TYPE_VALUE", overlayTypeVal);
+        valuesEditor.putInt("FONT_SIZE_VALUE", fontSizeVal);
+        valuesEditor.putInt("FONT_VALUE", fontVal);
+        valuesEditor.apply();
     }
 }
