@@ -398,12 +398,12 @@
 
                             <SeekBar
                                 android:id="@+id/xSeekBar"
-                                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                                style="@style/Widget.AppCompat.SeekBar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center_vertical"
-                                android:max="10"
+                                android:max="100"
                                 android:progress="3" />
 
                             <TextView
@@ -441,12 +441,12 @@
 
                             <SeekBar
                                 android:id="@+id/ySeekBar"
-                                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                                style="@style/Widget.AppCompat.SeekBar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_gravity="center_vertical"
-                                android:max="10"
+                                android:max="100"
                                 android:progress="3" />
 
                             <TextView

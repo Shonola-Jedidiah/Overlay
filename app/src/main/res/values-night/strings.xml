@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Overlay</string>
+    <string name="taskbar_text">OVERLAY APP</string>
     <string name="permissions">Click to grant app permission</string>
     <string name="overlay_type">Overlay Type</string>
     <string name="enable">Enable</string>
+    <string name="mins">Minutes</string>
     <string name="start">\tStart\t</string>
     <string name="overlay_text">Text to Overlay</string>
     <string name="save">\tSave\t</string>
@@ -12,4 +15,6 @@
     <string name="Y">Y</string>
     <string name="yvalue">20%</string>
     <string name="font_type">Font</string>
+    <string name="fontSize">Font Size</string>
+    <string name="SharedPref">com.luhyah.overlay.preference_file_key</string>
 </resources>
