@@ -53,8 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private String overlayTextFileName = "OVERLAYTEXT";
     @SuppressLint("ResourceType")
     private int reload = 1;
+  private   FileInputStream fileInputStream;
+  private   FileOutputStream fileOutputStream;
 
-//    Context context = this;
+    //    Context context = this;
     private SharedPreferences VALUES ;
 
     private TextView OT, F, FS, P, M, X, Y, xVal, yVal;
@@ -260,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     public void save(View view) {
         String overlayTextString = overlayText.getText().toString();
 
-        FileOutputStream fileOutputStream = null;
+         fileOutputStream = null;
         if (overlayTextString.length() > 2) {
             try {
                 fileOutputStream = openFileOutput(overlayTextFileName, MODE_PRIVATE);
@@ -284,10 +286,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String readText() {
-        FileInputStream fileInputStream = null;
+        fileInputStream  = null;
 
         try {
-            fileInputStream = openFileInput(overlayTextFileName);
+             fileInputStream = openFileInput(overlayTextFileName);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder stringBuilder = new StringBuilder();
@@ -297,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return stringBuilder.toString();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+           return "TEXT TO OVERLAY";
         } finally {
             if (fileInputStream != null) {
                 try {
@@ -338,13 +340,6 @@ public class MainActivity extends AppCompatActivity {
             card0.setVisibility(View.VISIBLE);
             enable.setChecked(false);
             enable.setEnabled(false);
-            overlayTpeSpinner.setEnabled(false);
-            fontSpinner.setEnabled(false);
-            fontSizeSpinner.setEnabled(false);
-            timeText.setEnabled(false);
-            overlayText.setEnabled(false);
-            xSeekBar.setEnabled(false);
-            ySeekBar.setEnabled(false);
 
         }
     }
