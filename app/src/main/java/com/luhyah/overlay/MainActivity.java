@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,10 +48,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText timeText, overlayText;
     private TextView start, save;
     private SeekBar xSeekBar, ySeekBar;
-    private String SharedPref = "com.luhyah.overlay.preference_file_key";
+    private final String SharedPref = "com.luhyah.overlay.preference_file_key";
 
-    private int fontSizeVal , enabledVal, overlayTypeVal, fontVal;
-    private String overlayTextFileName = "OVERLAYTEXT";
+    private int fontSizeVal ,  overlayTypeVal, fontVal;
+    private  boolean enabledVal;
+    private final String overlayTextFileName = "OVERLAYTEXT";
     @SuppressLint("ResourceType")
     private int reload = 1;
   private   FileInputStream fileInputStream;
@@ -72,57 +74,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         VALUES = getSharedPreferences(SharedPref, MODE_PRIVATE);
-        /*==========================================================================*/
+/*----------------------------------------------------------------*/
         initialization();
-      checkNLoadPreferences();
-        /*==========================================================================*/
-
-        if (checkIfPermissionIsGranted()) {
-            card0.setVisibility(View.GONE);
-        } else {
-            enable.setChecked(false);
-            enable.setEnabled(false);
-            overlayTpeSpinner.setEnabled(false);
-            fontSpinner.setEnabled(false);
-            fontSizeSpinner.setEnabled(false);
-            timeText.setEnabled(false);
-            overlayText.setEnabled(false);
-            xSeekBar.setEnabled(false);
-            ySeekBar.setEnabled(false);
-
-        }
-
-        card0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                grantPermission();
-            }
-        });
-
-        enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (! b) {
-                    overlayTpeSpinner.setEnabled(false);
-                    fontSpinner.setEnabled(false);
-                    fontSizeSpinner.setEnabled(false);
-                    timeText.setEnabled(false);
-                    overlayText.setEnabled(false);
-                    xSeekBar.setEnabled(false);
-                    ySeekBar.setEnabled(false);
-                    enabledVal = 0;
-                } else {
-                    overlayTpeSpinner.setEnabled(true);
-                    fontSpinner.setEnabled(true);
-                    fontSizeSpinner.setEnabled(true);
-                    timeText.setEnabled(true);
-                    overlayText.setEnabled(true);
-                    xSeekBar.setEnabled(true);
-                    ySeekBar.setEnabled(true);
-                    enabledVal = 1;
-                }
-            }
-        });
+        /*----------------------------------------------------------------*/
 
         ///////////////////////////////////SPINNER ADAPTERS////////////////////////////////////////////////////////
         ArrayAdapter<CharSequence> overlayType = ArrayAdapter.createFromResource(this, R.array.overlayType, android.R.layout.simple_spinner_item);
@@ -136,11 +90,53 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> fontSize = ArrayAdapter.createFromResource(this, R.array.fontSize, android.R.layout.simple_spinner_item);
         fontSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fontSizeSpinner.setAdapter(fontSize);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /*==========================================================================*/
+      checkNLoadPreferences();
+        /*==========================================================================*/
+
+        if (checkIfPermissionIsGranted()) {
+            card0.setVisibility(View.GONE);
+        }
+        else {
+            enable.setChecked(false);
+            enable.setEnabled(false);
+          disabled();
+
+        }
+
+        card0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                grantPermission();
+            }
+        });
+
+        enabledVal = enable.isChecked();
+        if(enable.isChecked()){
+            notDisabled();
+        }else{
+            disabled();
+        }
+        enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                enabledVal = enable.isChecked();
+              if(b) {
+                   notDisabled();
+                }
+              else {
+                   disabled();
+              }
+            }
+        });
+
+        overlayTypeVal = overlayTpeSpinner.getSelectedItemPosition();
         overlayTpeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                overlayTypeVal = i;
+
                 if (i == 0) {
                     card2.setVisibility(View.VISIBLE);
                     card3.setVisibility(View.GONE);
@@ -148,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     card3.setVisibility(View.VISIBLE);
                     card2.setVisibility(View.GONE);
                 }
+                overlayTypeVal = i;
             }
 
             @Override
@@ -155,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fontSizeVal = fontSizeSpinner.getSelectedItemPosition();
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -193,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        fontVal = fontSpinner.getSelectedItemPosition();
         fontSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -220,18 +218,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         if (readText() != null) {
             overlayText.setText(readText());
         }else {
             overlayText.setText("Input Text to Overlay");
         }
-
-
+        xBarValue = xSeekBar.getProgress();
         xSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                xBarValue = value;
+                xBarValue = xSeekBar.getProgress();
                 xVal.setText(value +"%");
             }
 
@@ -241,13 +237,14 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+        yBarValue = ySeekBar.getProgress();
         ySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                yBarValue = i;
+                yBarValue = ySeekBar.getProgress();
                 yVal.setText(i +"%");
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
@@ -257,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     //Write Overlay Text to Memory
     public void save(View view) {
@@ -285,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+// Read OverlayText from Memory
     public String readText() {
         fileInputStream  = null;
 
@@ -329,6 +328,27 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private  void disabled(){
+
+            overlayTpeSpinner.setEnabled(false);
+            fontSpinner.setEnabled(false);
+            fontSizeSpinner.setEnabled(false);
+            timeText.setEnabled(false);
+            overlayText.setEnabled(false);
+            xSeekBar.setEnabled(false);
+            ySeekBar.setEnabled(false);
+
+    }
+    private  void notDisabled(){
+            overlayTpeSpinner.setEnabled(true);
+            fontSpinner.setEnabled(true);
+            fontSizeSpinner.setEnabled(true);
+            timeText.setEnabled(true);
+            overlayText.setEnabled(true);
+            xSeekBar.setEnabled(true);
+            ySeekBar.setEnabled(true);
+
+    }
 
     @Override
     protected void onResume() {
@@ -345,9 +365,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         savePreferences();
+
     }
 
     private void initialization() {
@@ -376,37 +397,30 @@ public class MainActivity extends AppCompatActivity {
         xVal = findViewById(R.id.xV);
         yVal = findViewById(R.id.yV);
 
-        overlayTpeSpinner.setEnabled(false);
-        fontSpinner.setEnabled(false);
-        fontSizeSpinner.setEnabled(false);
-        timeText.setEnabled(false);
-        overlayText.setEnabled(false);
-        xSeekBar.setEnabled(false);
-        ySeekBar.setEnabled(false);
+
     }
 
     private void checkNLoadPreferences() {
         Map<String, ?> allValues = VALUES.getAll();
         if (allValues.isEmpty()) {
-            overlayTpeSpinner.setEnabled(false);
-            fontSpinner.setEnabled(false);
-            fontSizeSpinner.setEnabled(false);
-            timeText.setEnabled(false);
-            overlayText.setEnabled(false);
-            xSeekBar.setEnabled(false);
-            ySeekBar.setEnabled(false);
+           disabled();
         } else {
                 ySeekBar.setProgress(VALUES.getInt("Y_BAR_VALUE", 0));
                 xSeekBar.setProgress( VALUES.getInt("X_BAR_VALUE", 0));
-               overlayTpeSpinner.setSelection((VALUES.getInt("OVERLAY_TYPE_VALUE", 0)));
-                fontSpinner.setSelection(VALUES.getInt("FONT_VALUE", 0));
-                fontSizeSpinner.setSelection(VALUES.getInt("FONT_SIZE_VALUE", 0));
+            overlayTpeSpinner.setSelection(VALUES.getInt("OVERLAY_TYPE_VALUE", 0));
+            fontSpinner.setSelection(VALUES.getInt("FONT_VALUE", 0));
+            fontSizeSpinner.setSelection( VALUES.getInt("FONT_SIZE_VALUE", 0));
 
-                if(VALUES.getInt("ENABLE_VALUE", 0)==0){
-                    enable.setChecked(false);
-                }else {
+                boolean temp = VALUES.getBoolean("ENABLE_VALUE", true);
+
+                if(temp){
                     enable.setChecked(true);
+                }else {
+                    enable.setChecked(false);
                 }
+            xVal.setText(VALUES.getInt("X_BAR_VALUE", 0)+"%");
+            yVal.setText(VALUES.getInt("Y_BAR_VALUE", 0)+"%");
+
         }
     }
 
@@ -414,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
          SharedPreferences.Editor valuesEditor = VALUES.edit();
         valuesEditor.putInt("Y_BAR_VALUE", yBarValue);
         valuesEditor.putInt("X_BAR_VALUE", xBarValue);
-        valuesEditor.putInt("ENABLE_VALUE", enabledVal);
+        valuesEditor.putBoolean("ENABLE_VALUE", enabledVal);
         valuesEditor.putInt("OVERLAY_TYPE_VALUE", overlayTypeVal);
         valuesEditor.putInt("FONT_SIZE_VALUE", fontSizeVal);
         valuesEditor.putInt("FONT_VALUE", fontVal);
