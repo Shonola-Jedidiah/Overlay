@@ -251,7 +251,7 @@
                             android:inputType="number"
 
                             android:maxLength="3"
-                            android:text="300"
+                            android:text="60"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -506,12 +506,13 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_05"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_margin="10dp"
                     app:cardBackgroundColor="?attr/cardBgColor"
-                    app:cardCornerRadius="25dp"
-                    app:cardElevation="1dp">
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="1dp"
+                    >
 
                     <TextView
                         android:id="@+id/COUNTER"
@@ -521,9 +522,10 @@
                         android:layout_marginLeft="4dp"
                         android:fontFamily="@font/comfortaa_bold"
                         android:paddingRight="10dp"
-                        android:text="00:00"
+                        android:text="00:00:00"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:gravity="center"/>
 
                 </androidx.cardview.widget.CardView>
 

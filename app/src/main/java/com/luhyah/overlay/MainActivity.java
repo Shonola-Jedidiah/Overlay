@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private int xBarValue, yBarValue;
     private CountDownTimer countDowITimer;
     private  long pausedTime;
+    private boolean isTimerActivie;
 
     /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
@@ -77,23 +78,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         VALUES = getSharedPreferences(SharedPref, MODE_PRIVATE);
 /*----------------------------------------------------------------*/
+
+        isTimerActivie = true;
         initialization();
-
         /*----------------------------------------------------------------*/
-
-        ///////////////////////////////////SPINNER ADAPTERS////////////////////////////////////////////////////////
-        ArrayAdapter<CharSequence> overlayType = ArrayAdapter.createFromResource(this, R.array.overlayType, android.R.layout.simple_spinner_item);
-        overlayType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        overlayTpeSpinner.setAdapter(overlayType);
-
-        ArrayAdapter<CharSequence> font = ArrayAdapter.createFromResource(this, R.array.fonts, android.R.layout.simple_spinner_item);
-        font.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        fontSpinner.setAdapter(font);
-
-        ArrayAdapter<CharSequence> fontSize = ArrayAdapter.createFromResource(this, R.array.fontSize, android.R.layout.simple_spinner_item);
-        fontSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        fontSizeSpinner.setAdapter(fontSize);
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /*==========================================================================*/
       checkNLoadPreferences();
@@ -146,6 +134,17 @@ public class MainActivity extends AppCompatActivity {
                 } else if(i == 1){
                     card3.setVisibility(View.VISIBLE);
                     card2.setVisibility(View.GONE);
+                   if(countDowITimer != null) {
+                       pauseTimer();
+                   }
+
+                    if (readText() != null) {
+                        timerHolder.setText(readText());
+                    }
+                    else {
+                        timerHolder.setText("Type Something in the box");
+                    }
+
                 }
                 overlayTypeVal = i;
             }
@@ -274,9 +273,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(pausePlay.getText().toString().equals("\t Pause \t")){
                     pausePlay.setText("\t Play \t");
+                    pauseTimer();
                 }
                 else {
                     pausePlay.setText("\t Pause \t");
+                    resumeTimer();
                 }
             }
         });
@@ -414,6 +415,19 @@ public class MainActivity extends AppCompatActivity {
         timerHolder = findViewById(R.id.COUNTER);
         pausePlay = findViewById(R.id.pause_play);
         end = findViewById(R.id.end);
+        ///////////////////////////////////SPINNER ADAPTERS////////////////////////////////////////////////////////
+        ArrayAdapter<CharSequence> overlayType = ArrayAdapter.createFromResource(this, R.array.overlayType, android.R.layout.simple_spinner_item);
+        overlayType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        overlayTpeSpinner.setAdapter(overlayType);
+
+        ArrayAdapter<CharSequence> font = ArrayAdapter.createFromResource(this, R.array.fonts, android.R.layout.simple_spinner_item);
+        font.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fontSpinner.setAdapter(font);
+
+        ArrayAdapter<CharSequence> fontSize = ArrayAdapter.createFromResource(this, R.array.fontSize, android.R.layout.simple_spinner_item);
+        fontSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fontSizeSpinner.setAdapter(fontSize);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
     private void checkNLoadPreferences() {
         Map<String, ?> allValues = VALUES.getAll();
@@ -446,35 +460,61 @@ public class MainActivity extends AppCompatActivity {
         valuesEditor.putInt("FONT_VALUE", fontVal);
         valuesEditor.apply();
     }
-private void startTimer(int min){
+private void startTimer(long min){
         countDowITimer = new CountDownTimer(min *60 *1000, 1000) {
             @Override
             public void onTick(long l) {
+                pausedTime = l;
                 long hours = l/(60*60*1000);
                 long minutes = l / (60 * 1000)%60;
                 long seconds = (l / 1000) % 60;
 
-
-                    String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours,minutes, seconds);
-                    timerHolder.setText(timeLeftFormatted);
-
+                    String timeLeft = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours,minutes, seconds);
+                    timerHolder.setText(timeLeft);
             }
 
             @Override
             public void onFinish() {
-                    timerHolder.setText("00:00:00");
+                timerHolder.setText("00:00:00");
+                isTimerActivie = false;
             }
         };
         countDowITimer.start();
+        isTimerActivie = true;
 }
 private void pauseTimer(){
     countDowITimer.cancel();
+    isTimerActivie = false;
+
 }
 private void resumeTimer(){
+    if(!isTimerActivie){
+       countDowITimer = new CountDownTimer(pausedTime, 1000) {
+           @Override
+           public void onTick(long l) {
+               pausedTime = l;
+               long hours = l/(60*60*1000);
+               long minutes = l / (60 * 1000)%60;
+               long seconds = (l / 1000) % 60;
 
+               String timeLeft = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours,minutes, seconds);
+               timerHolder.setText(timeLeft);
+           }
+
+           @Override
+           public void onFinish() {
+               timerHolder.setText("00:00:00");
+               isTimerActivie = false;
+           }
+       };
+       countDowITimer.start();
+       isTimerActivie = true;
+    }
 }
 private void endTimer(){
     countDowITimer.cancel();
+    pausedTime = 0;
+    timerHolder.setText("00:00:00");
 }
 
 }
