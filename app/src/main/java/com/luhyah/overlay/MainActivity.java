@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Switch enable;
     private Spinner overlayTpeSpinner, fontSizeSpinner, fontSpinner;
     private EditText timeText, overlayText;
-    private TextView start, save;
+    private TextView start, save, pausePlay, end;
     private SeekBar xSeekBar, ySeekBar;
     private final String SharedPref = "com.luhyah.overlay.preference_file_key";
 
@@ -61,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
     //    Context context = this;
     private SharedPreferences VALUES ;
 
-    private TextView OT, F, FS, P, M, X, Y, xVal, yVal;
+    private TextView OT, F, FS, P, M, X, Y, xVal, yVal, timerHolder;
 
-    //=============================SHARED PREFERENCE VALUES HOLDERS=================================//
     private int xBarValue, yBarValue;
+    private CountDownTimer countDowITimer;
+    private  long pausedTime;
 
-// ================================================================================================//
-
+    /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         VALUES = getSharedPreferences(SharedPref, MODE_PRIVATE);
 /*----------------------------------------------------------------*/
         initialization();
+
         /*----------------------------------------------------------------*/
 
         ///////////////////////////////////SPINNER ADAPTERS////////////////////////////////////////////////////////
@@ -220,7 +223,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (readText() != null) {
             overlayText.setText(readText());
-        }else {
+        }
+        else {
             overlayText.setText("Input Text to Overlay");
         }
         xBarValue = xSeekBar.getProgress();
@@ -230,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
                 xBarValue = xSeekBar.getProgress();
                 xVal.setText(value +"%");
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
@@ -253,13 +256,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int min = Integer.parseInt(timeText.getText().toString());
+                startTimer(min);
+            }
+        });
+        end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                endTimer();
+            }
+        });
+        pausePlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(pausePlay.getText().toString().equals("\t Pause \t")){
+                    pausePlay.setText("\t Play \t");
+                }
+                else {
+                    pausePlay.setText("\t Pause \t");
+                }
+            }
+        });
     }
 
 
     //Write Overlay Text to Memory
     public void save(View view) {
         String overlayTextString = overlayText.getText().toString();
-
          fileOutputStream = null;
         if (overlayTextString.length() > 2) {
             try {
@@ -272,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
                         fileOutputStream.write(overlayTextString.getBytes());
                         Toast.makeText(this, "SAVED", Toast.LENGTH_SHORT).show();
                         fileOutputStream.close();
-
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -286,7 +311,6 @@ public class MainActivity extends AppCompatActivity {
 // Read OverlayText from Memory
     public String readText() {
         fileInputStream  = null;
-
         try {
              fileInputStream = openFileInput(overlayTextFileName);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
@@ -315,12 +339,10 @@ public class MainActivity extends AppCompatActivity {
     private void grantPermission() {
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, REQUEST_CODE);
-
     }
 
     private boolean checkIfPermissionIsGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
             if (Settings.canDrawOverlays(this)) {
                 return true;
             }
@@ -329,7 +351,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private  void disabled(){
-
             overlayTpeSpinner.setEnabled(false);
             fontSpinner.setEnabled(false);
             fontSizeSpinner.setEnabled(false);
@@ -337,7 +358,6 @@ public class MainActivity extends AppCompatActivity {
             overlayText.setEnabled(false);
             xSeekBar.setEnabled(false);
             ySeekBar.setEnabled(false);
-
     }
     private  void notDisabled(){
             overlayTpeSpinner.setEnabled(true);
@@ -360,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
             card0.setVisibility(View.VISIBLE);
             enable.setChecked(false);
             enable.setEnabled(false);
-
         }
     }
 
@@ -368,14 +387,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         savePreferences();
-
     }
-
     private void initialization() {
         card0 = findViewById(R.id.card_00);
         card2 = findViewById(R.id.card_02);
         card3 = findViewById(R.id.card_03);
-
         enable = findViewById(R.id.enable);
         overlayTpeSpinner = findViewById(R.id.overlayTypeSpinner);
         fontSpinner = findViewById(R.id.fontSpinner);
@@ -386,7 +402,6 @@ public class MainActivity extends AppCompatActivity {
         save = findViewById(R.id.save);
         xSeekBar = findViewById(R.id.xSeekBar);
         ySeekBar = findViewById(R.id.ySeekBar);
-
         OT = findViewById(R.id.OT);
         F = findViewById(R.id.F);
         FS = findViewById(R.id.FS);
@@ -396,23 +411,22 @@ public class MainActivity extends AppCompatActivity {
         Y = findViewById(R.id.Y);
         xVal = findViewById(R.id.xV);
         yVal = findViewById(R.id.yV);
-
-
+        timerHolder = findViewById(R.id.COUNTER);
+        pausePlay = findViewById(R.id.pause_play);
+        end = findViewById(R.id.end);
     }
-
     private void checkNLoadPreferences() {
         Map<String, ?> allValues = VALUES.getAll();
         if (allValues.isEmpty()) {
            disabled();
-        } else {
+        }
+        else {
                 ySeekBar.setProgress(VALUES.getInt("Y_BAR_VALUE", 0));
                 xSeekBar.setProgress( VALUES.getInt("X_BAR_VALUE", 0));
             overlayTpeSpinner.setSelection(VALUES.getInt("OVERLAY_TYPE_VALUE", 0));
             fontSpinner.setSelection(VALUES.getInt("FONT_VALUE", 0));
             fontSizeSpinner.setSelection( VALUES.getInt("FONT_SIZE_VALUE", 0));
-
                 boolean temp = VALUES.getBoolean("ENABLE_VALUE", true);
-
                 if(temp){
                     enable.setChecked(true);
                 }else {
@@ -420,10 +434,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             xVal.setText(VALUES.getInt("X_BAR_VALUE", 0)+"%");
             yVal.setText(VALUES.getInt("Y_BAR_VALUE", 0)+"%");
-
         }
     }
-
     private void savePreferences() {
          SharedPreferences.Editor valuesEditor = VALUES.edit();
         valuesEditor.putInt("Y_BAR_VALUE", yBarValue);
@@ -434,4 +446,35 @@ public class MainActivity extends AppCompatActivity {
         valuesEditor.putInt("FONT_VALUE", fontVal);
         valuesEditor.apply();
     }
+private void startTimer(int min){
+        countDowITimer = new CountDownTimer(min *60 *1000, 1000) {
+            @Override
+            public void onTick(long l) {
+                long hours = l/(60*60*1000);
+                long minutes = l / (60 * 1000)%60;
+                long seconds = (l / 1000) % 60;
+
+
+                    String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours,minutes, seconds);
+                    timerHolder.setText(timeLeftFormatted);
+
+            }
+
+            @Override
+            public void onFinish() {
+                    timerHolder.setText("00:00:00");
+            }
+        };
+        countDowITimer.start();
+}
+private void pauseTimer(){
+    countDowITimer.cancel();
+}
+private void resumeTimer(){
+
+}
+private void endTimer(){
+    countDowITimer.cancel();
+}
+
 }
