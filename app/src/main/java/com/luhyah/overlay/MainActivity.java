@@ -10,16 +10,18 @@ package com.luhyah.overlay;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -36,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 
@@ -68,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
     private int xBarValue, yBarValue;
     private CountDownTimer countDowITimer;
     private  long pausedTime;
-    private boolean isTimerActivie;
+    private boolean isTimerActive;
+    private WindowManager windowManager;
 
     /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
@@ -78,11 +82,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         VALUES = getSharedPreferences(SharedPref, MODE_PRIVATE);
 /*----------------------------------------------------------------*/
-
-        isTimerActivie = true;
+        isTimerActive = true;
         initialization();
         /*----------------------------------------------------------------*/
 
+        /*88888888888888888888888888888888888888888888888888888 */
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        WindowManager.LayoutParams  layoutParams= new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View overlayView = inflater.inflate(R.layout.overlayout, null);
+
+
+
+        /*88888888888888888888888888888888888888888888888888888 */
         /*==========================================================================*/
       checkNLoadPreferences();
         /*==========================================================================*/
@@ -107,8 +124,14 @@ public class MainActivity extends AppCompatActivity {
         enabledVal = enable.isChecked();
         if(enable.isChecked()){
             notDisabled();
-        }else{
+            windowManager.addView(overlayView, layoutParams);
+        }
+        else{
             disabled();
+            if(windowManager != null) {
+             //   windowManager.removeView(overlayView);
+
+            }
         }
         enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -116,9 +139,13 @@ public class MainActivity extends AppCompatActivity {
                 enabledVal = enable.isChecked();
               if(b) {
                    notDisabled();
+                  windowManager.addView(overlayView, layoutParams);
                 }
               else {
                    disabled();
+                  if(windowManager != null) {
+                      windowManager.removeViewImmediate(overlayView);
+                  }
               }
             }
         });
@@ -136,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                     card2.setVisibility(View.GONE);
                    if(countDowITimer != null) {
                        pauseTimer();
+                       pausePlay.setText("\t Play \t");
                    }
 
                     if (readText() != null) {
@@ -281,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
 
@@ -476,19 +505,18 @@ private void startTimer(long min){
             @Override
             public void onFinish() {
                 timerHolder.setText("00:00:00");
-                isTimerActivie = false;
+                isTimerActive = false;
             }
         };
         countDowITimer.start();
-        isTimerActivie = true;
+        isTimerActive = true;
 }
 private void pauseTimer(){
     countDowITimer.cancel();
-    isTimerActivie = false;
-
+    isTimerActive = false;
 }
 private void resumeTimer(){
-    if(!isTimerActivie){
+    if(! isTimerActive){
        countDowITimer = new CountDownTimer(pausedTime, 1000) {
            @Override
            public void onTick(long l) {
@@ -496,25 +524,32 @@ private void resumeTimer(){
                long hours = l/(60*60*1000);
                long minutes = l / (60 * 1000)%60;
                long seconds = (l / 1000) % 60;
-
                String timeLeft = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours,minutes, seconds);
                timerHolder.setText(timeLeft);
            }
-
            @Override
            public void onFinish() {
                timerHolder.setText("00:00:00");
-               isTimerActivie = false;
+               isTimerActive = false;
            }
        };
        countDowITimer.start();
-       isTimerActivie = true;
+       isTimerActive = true;
     }
 }
 private void endTimer(){
     countDowITimer.cancel();
     pausedTime = 0;
     timerHolder.setText("00:00:00");
+}
+
+private double[] getScreenSize(){
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    int height = displayMetrics.heightPixels;
+    int width = displayMetrics.widthPixels;
+        double[] placeHolder = {height, width};
+    return placeHolder;
 }
 
 }
