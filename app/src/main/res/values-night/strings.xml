@@ -6,7 +6,7 @@
     <string name="overlay_type">Overlay Type</string>
     <string name="enable">Enable</string>
     <string name="mins">Minutes</string>
-    <string name="start">\tStart\t</string>
+    <string name="start">\tStart \t</string>
     <string name="overlay_text">Text to Overlay</string>
     <string name="save">\tSave \t</string>
     <string name="position">Position</string>
