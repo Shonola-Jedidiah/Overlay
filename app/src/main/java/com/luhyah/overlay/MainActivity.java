@@ -156,12 +156,22 @@ public class MainActivity extends AppCompatActivity {
                 if (i == 0) {
                     card2.setVisibility (View.VISIBLE);
                     card3.setVisibility (View.GONE);
+                    measureCard ();
+                    overlayCard.setTranslationY (0);
+                    overlayCard.setTranslationX (0);
+                    xSeekBar.setProgress (0);
+                    ySeekBar.setProgress (0);
                     if(pausedTime != 0){OVERLAY.setText (timeLeft);}
                     else {OVERLAY.setText ("00:00:00");}
                 }
                 else if (i == 1) {
                     card3.setVisibility (View.VISIBLE);
                     card2.setVisibility (View.GONE);
+                    measureCard ();
+                    overlayCard.setTranslationY (0);
+                    overlayCard.setTranslationX (0);
+                    xSeekBar.setProgress (0);
+                    ySeekBar.setProgress (0);
                     if (countDowITimer != null) {
                         pauseTimer ();
                         pausePlay.setText ("\t Play \t");
@@ -193,24 +203,31 @@ public class MainActivity extends AppCompatActivity {
                 switch (fontSizeVal) {
                     case 0:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 12);
+                        measureCard ();
                         break;
                     case 1:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 14);
+                        measureCard ();
                         break;
                     case 2:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 16);
+                        measureCard ();
                         break;
                     case 3:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 18);
+                        measureCard ();
                         break;
                     case 4:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 20);
+                        measureCard ();
                         break;
                     case 5:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 22);
+                        measureCard ();
                         break;
                     case 6:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 24);
+                        measureCard ();
                         break;
                     default:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 15);
@@ -232,15 +249,19 @@ public class MainActivity extends AppCompatActivity {
                 switch (fontVal) {
                     case 0:
                         OVERLAY.setTypeface (abel);
+                        measureCard ();
                         break;
                     case 1:
                         OVERLAY.setTypeface (amita);
+                        measureCard ();
                         break;
                     case 2:
                         OVERLAY.setTypeface (comfortaa);
+                        measureCard ();
                         break;
                     case 3:
                         OVERLAY.setTypeface (damion);
+                        measureCard ();
                     default:
                         //
 
