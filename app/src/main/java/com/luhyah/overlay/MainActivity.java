@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -49,7 +50,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private androidx.cardview.widget.CardView card0;
-    private androidx.cardview.widget.CardView card2;
+    private androidx.cardview.widget.CardView card2, card2b;
     private androidx.cardview.widget.CardView card3;
     private Switch enable;
     private Spinner overlayTpeSpinner, fontSizeSpinner, fontSpinner;
@@ -85,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
     private  androidx.cardview.widget.CardView overlayCard;
     private int ocH, ocW;
     private float defValueX, defValueY;
+
+    private  TextView startCT, pausePlayCT, endCT;
+    private Handler handler;
+
+    private int initTime = 0;
+    private  String timeElapsed;
 
     /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
@@ -127,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         if (enable.isChecked ()) {
             notDisabled ();
             showOverlay (overlayView);
+
         } else {
             disabled ();
             isThereOverlay = false;
@@ -156,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 if (i == 0) {
                     card2.setVisibility (View.VISIBLE);
                     card3.setVisibility (View.GONE);
+                    card2b.setVisibility (View.GONE);
                     measureCard ();
                     overlayCard.setTranslationY (0);
                     overlayCard.setTranslationX (0);
@@ -163,10 +172,34 @@ public class MainActivity extends AppCompatActivity {
                     ySeekBar.setProgress (0);
                     if(pausedTime != 0){OVERLAY.setText (timeLeft);}
                     else {OVERLAY.setText ("00:00:00");}
+
+                    if(initTime!= 0){
+                        pauseCTimer ();
+                        pausePlayCT.setText ("\t Play \t");
+                    }
                 }
                 else if (i == 1) {
+                    card2b.setVisibility (View.VISIBLE);
+                    card2.setVisibility (View.GONE);
+                    card3.setVisibility (View.GONE);
+                    measureCard ();
+                    overlayCard.setTranslationY (0);
+                    overlayCard.setTranslationX (0);
+                    xSeekBar.setProgress (0);
+                    ySeekBar.setProgress (0);
+                    if(initTime != 0){OVERLAY.setText (timeElapsed);}
+                    else {OVERLAY.setText ("00:00:00");}
+
+                    if (countDowITimer != null) {
+                        pauseTimer ();
+                        pausePlay.setText ("\t Play \t");
+                    }
+
+                } else if (i == 2){
+
                     card3.setVisibility (View.VISIBLE);
                     card2.setVisibility (View.GONE);
+                    card2b.setVisibility (View.GONE);
                     measureCard ();
                     overlayCard.setTranslationY (0);
                     overlayCard.setTranslationX (0);
@@ -176,7 +209,10 @@ public class MainActivity extends AppCompatActivity {
                         pauseTimer ();
                         pausePlay.setText ("\t Play \t");
                     }
-
+                    if(initTime != 0){
+                        pauseCTimer ();
+                        pausePlayCT.setText ("\t Play \t");
+                    }
                     if (readText () != null) {
                         OVERLAY.setText (readText ());
                     } else {
@@ -280,8 +316,6 @@ public class MainActivity extends AppCompatActivity {
             overlayText.setText ("Input Text to Overlay");
         }
 
-
-
         xBarValue = xSeekBar.getProgress ();
         xSeekBar.setOnSeekBarChangeListener (new SeekBar.OnSeekBarChangeListener () {
             @Override
@@ -369,6 +403,32 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 saveText ();
                 OVERLAY.setText (overlayText.getText ().toString ());
+
+            }
+        });
+
+        startCT.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                startCTimer ();
+            }
+        });
+        pausePlayCT.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                if (pausePlayCT.getText ().toString ().equals ("\t Pause \t")) {
+                    pausePlayCT.setText ("\t Play \t");
+                    pauseCTimer ();
+                } else {
+                    pausePlayCT.setText ("\t Pause \t");
+                    playCT ();
+                }
+            }
+        });
+        endCT.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                endCT ();
             }
         });
     }
@@ -528,6 +588,12 @@ public class MainActivity extends AppCompatActivity {
         amita = ResourcesCompat.getFont (this, R.font.amita_bold);
         comfortaa = ResourcesCompat.getFont (this, R.font.comfortaa_bold);
         damion = ResourcesCompat.getFont (this, R.font.damion);
+
+        startCT = findViewById (R.id.startCT);
+        pausePlayCT = findViewById (R.id.pause_playCT);
+        endCT = findViewById (R.id.endCT);
+        handler = new Handler ();
+        card2b =findViewById (R.id.card_02b);
     }
 
     private void checkNLoadPreferences() {
@@ -669,5 +735,46 @@ public class MainActivity extends AppCompatActivity {
                 ocW = overlayCard.getWidth ();
             }
         });
+    }
+
+    private void startCTimer(){
+        handler.post (new Runnable () {
+            @Override
+            public void run() {
+                initTime++;
+               int hours = initTime/3600;
+                int minutes = (initTime/3600)%60;
+               int seconds = initTime%60;
+
+                timeElapsed = String.format (Locale.getDefault () , "%02d:%02d:%02d" , hours , minutes , seconds);
+                OVERLAY.setText (timeElapsed);
+                handler.postDelayed (this, 1000);
+            }
+        });
+    }
+    private  void pauseCTimer(){
+            handler.removeCallbacksAndMessages (null);
+    }
+    private void playCT(){
+        handler.post (new Runnable () {
+            @Override
+            public void run() {
+                initTime++;
+                int hours = initTime/3600;
+                int minutes = (initTime/3600)%60;
+                int seconds = initTime%60;
+
+                timeElapsed = String.format (Locale.getDefault () , "%02d:%02d:%02d" , hours , minutes , seconds);
+                OVERLAY.setText (timeElapsed);
+                handler.postDelayed (this, 1000);
+            }
+        });
+
+    }
+    private void endCT(){
+        handler.removeCallbacksAndMessages (null);
+        initTime= 0;
+        timeElapsed ="00:00:00";
+        OVERLAY.setText (timeElapsed);
     }
 }

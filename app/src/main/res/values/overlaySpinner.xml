@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="overlayType">
-        <item>TIMER</item>
+        <item>COUNTDOWN TIMER</item>
+        <item>COUNT-UP TIMER</item>
         <item>TEXT</item>
     </string-array>
 

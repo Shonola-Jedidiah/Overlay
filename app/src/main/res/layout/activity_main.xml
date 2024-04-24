@@ -273,9 +273,9 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
-
                         android:orientation="horizontal"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center|left"
+                        >
 
                         <TextView
                             android:id="@+id/start"
@@ -286,6 +286,7 @@
                             android:background="?attr/btnColor"
                             android:fontFamily="@font/comfortaa_bold"
                             android:paddingBottom="4dp"
+                      android:paddingLeft="10dp"
                             android:text="@string/start"
                             android:textColor="?attr/android:textColor"
                             android:textSize="18sp"
@@ -320,6 +321,105 @@
                             android:textColor="?attr/android:textColor"/>
 
                     </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_02b"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_margin="10dp"
+                    app:cardBackgroundColor="?attr/cardBgColor"
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="1dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="15dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|left"
+                                android:paddingRight="10dp"
+                                android:src="?attr/stopwatch" />
+
+
+
+                            <TextView
+                                android:id="@+id/cTimer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="20dp"
+                                android:fontFamily="@font/comfortaa_bold"
+                                android:text="@string/cT"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+
+                            android:orientation="horizontal"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/startCT"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="12dp"
+                                android:background="?attr/btnColor"
+                                android:fontFamily="@font/comfortaa_bold"
+                                android:paddingBottom="4dp"
+                                android:text="@string/start"
+                                android:textColor="?attr/android:textColor"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/pause_playCT"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="12dp"
+                                android:background="?attr/btnColor"
+                                android:fontFamily="@font/comfortaa_bold"
+                                android:paddingBottom="4dp"
+                                android:text="@string/Pause"
+                                android:textColor="?attr/android:textColor"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/endCT"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="12dp"
+                                android:paddingBottom="4dp"
+                                android:fontFamily="@font/comfortaa_bold"
+                                android:text="@string/Stop"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:background="?attr/btnColor"
+                                android:textColor="?attr/android:textColor"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
