@@ -19,5 +19,7 @@
     <string name="Stop">\t Stop \t</string>
     <string name="Pause">\t Pause \t</string>
     <string name="cT">Count-Up Timer</string>
+    <string name="bgC">\t Bg Color \t</string>
+    <string name="tC">\tText Color \t</string>
 
 </resources>

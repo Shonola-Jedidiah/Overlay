@@ -3,8 +3,14 @@
     <string-array name="fonts">
         <item>ABEL</item>
         <item>AMITA</item>
+        <item>ARCHI\'S</item>
         <item>COMFORTAA</item>
         <item>DAMION</item>
+        <item>ICEBERG</item>
+        <item>MONOSPACE</item>
+        <item>SANS SERIF</item>
+
+
     </string-array>
 
 </resources>

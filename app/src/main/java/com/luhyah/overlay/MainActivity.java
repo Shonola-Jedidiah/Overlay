@@ -7,6 +7,7 @@
 
 package com.luhyah.overlay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -22,6 +23,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,8 @@ import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Map;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,14 +70,11 @@ public class MainActivity extends AppCompatActivity {
     private int reload = 1;
     private FileInputStream fileInputStream;
     private FileOutputStream fileOutputStream;
-
-    //    Context context = this;
     private SharedPreferences VALUES;
-
     private TextView OT, F, FS, P, M, X, Y, xVal, yVal;
 
     private int xBarValue, yBarValue;
-    private CountDownTimer countDowITimer;
+    private CountDownTimer countDownTimer;
     private long pausedTime;
     private boolean isTimerActive;
     private WindowManager windowManager;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     private  TextView OVERLAY;
     private  String timeLeft;
-    private Typeface abel, amita, comfortaa, damion;
+    private Typeface abel, amita, comfortaa, damion, iceberg, archi;
 
     private  androidx.cardview.widget.CardView overlayCard;
     private int ocH, ocW;
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int initTime = 0;
     private  String timeElapsed;
+    private TextView bgC, tC;
+    private int dColor, dColorT;
 
     /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
@@ -101,13 +104,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView (R.layout.activity_main);
         VALUES = getSharedPreferences (SharedPref , MODE_PRIVATE);
         /*----------------------------------------------------------------*/
-
-        isTimerActive = true;
+        windowManager = (WindowManager) getSystemService (WINDOW_SERVICE);
+        isTimerActive = false;
         initialization ();
         LayoutInflater inflater = (LayoutInflater) getSystemService (LAYOUT_INFLATER_SERVICE);
         View overlayView = inflater.inflate (R.layout.overlayout , null);
         OVERLAY = overlayView.findViewById (R.id.overlaidText);
         overlayCard = overlayView.findViewById (R.id.overlayCard);
+        dColor = R.attr.cardBgColor;
+        dColorT = 0;
+//        overlayCard.setCardBackgroundColor (dColor);
+//        OVERLAY.setTextColor (dColorT);
         /*----------------------------------------------------------------*/
 
         /*==========================================================================*/
@@ -116,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (checkIfPermissionIsGranted ()) {
             card0.setVisibility (View.GONE);
-        } else {
+        }
+        else {
             enable.setChecked (false);
             enable.setEnabled (false);
             disabled ();
-
         }
 
         card0.setOnClickListener (new View.OnClickListener () {
@@ -134,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
         if (enable.isChecked ()) {
             notDisabled ();
             showOverlay (overlayView);
-
+            overlayCard.setTranslationY (defValueY);
+            overlayCard.setTranslationX (defValueX);
         } else {
             disabled ();
             isThereOverlay = false;
@@ -146,16 +154,24 @@ public class MainActivity extends AppCompatActivity {
                 enabledVal = enable.isChecked ();
                 if (b) {
                     notDisabled ();
+                    overlayCard.setTranslationY (defValueY);
+                    overlayCard.setTranslationX (defValueX);
                     showOverlay (overlayView);
+                    isThereOverlay = true;
+
                 } else {
                     disabled ();
                    removeOverlay (overlayView);
+                   isThereOverlay = false;
                 }
             }
         });
 
         overlayTypeVal = overlayTpeSpinner.getSelectedItemPosition ();
         measureCard ();
+
+
+
         overlayTpeSpinner.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener () {
 
             @Override
@@ -166,10 +182,6 @@ public class MainActivity extends AppCompatActivity {
                     card3.setVisibility (View.GONE);
                     card2b.setVisibility (View.GONE);
                     measureCard ();
-                    overlayCard.setTranslationY (0);
-                    overlayCard.setTranslationX (0);
-                    xSeekBar.setProgress (0);
-                    ySeekBar.setProgress (0);
                     if(pausedTime != 0){OVERLAY.setText (timeLeft);}
                     else {OVERLAY.setText ("00:00:00");}
 
@@ -183,29 +195,20 @@ public class MainActivity extends AppCompatActivity {
                     card2.setVisibility (View.GONE);
                     card3.setVisibility (View.GONE);
                     measureCard ();
-                    overlayCard.setTranslationY (0);
-                    overlayCard.setTranslationX (0);
-                    xSeekBar.setProgress (0);
-                    ySeekBar.setProgress (0);
                     if(initTime != 0){OVERLAY.setText (timeElapsed);}
                     else {OVERLAY.setText ("00:00:00");}
 
-                    if (countDowITimer != null) {
+                    if (countDownTimer != null) {
                         pauseTimer ();
                         pausePlay.setText ("\t Play \t");
                     }
-
-                } else if (i == 2){
-
+                }
+                else if (i == 2){
                     card3.setVisibility (View.VISIBLE);
                     card2.setVisibility (View.GONE);
                     card2b.setVisibility (View.GONE);
                     measureCard ();
-                    overlayCard.setTranslationY (0);
-                    overlayCard.setTranslationX (0);
-                    xSeekBar.setProgress (0);
-                    ySeekBar.setProgress (0);
-                    if (countDowITimer != null) {
+                    if (countDownTimer != null) {
                         pauseTimer ();
                         pausePlay.setText ("\t Play \t");
                     }
@@ -218,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         OVERLAY.setText ("Type Something in the APP");
                     }
-
                 }
                 overlayTypeVal = i;
             }
@@ -226,8 +228,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
-
-
         });
 
         fontSizeVal = fontSizeSpinner.getSelectedItemPosition ();
@@ -265,6 +265,18 @@ public class MainActivity extends AppCompatActivity {
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 24);
                         measureCard ();
                         break;
+                    case 7:
+                        OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 26);
+                        measureCard ();
+                        break;
+                    case 8:
+                        OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 28);
+                        measureCard ();
+                        break;
+                    case 9:
+                        OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 30);
+                        measureCard ();
+                        break;
                     default:
                         OVERLAY.setTextSize (TypedValue.COMPLEX_UNIT_SP, 15);
                 }
@@ -281,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView , View view , int i , long l) {
                 fontVal = i;
-                //Switch Statement to read Fonts and implement neccessary changes
+//                Switch Statement to read Fonts and implement neccessary changes
                 switch (fontVal) {
                     case 0:
                         OVERLAY.setTypeface (abel);
@@ -292,12 +304,29 @@ public class MainActivity extends AppCompatActivity {
                         measureCard ();
                         break;
                     case 2:
-                        OVERLAY.setTypeface (comfortaa);
+                        OVERLAY.setTypeface (archi);
                         measureCard ();
                         break;
                     case 3:
+                        OVERLAY.setTypeface (comfortaa);
+                        measureCard ();
+                        break;
+                    case 4:
                         OVERLAY.setTypeface (damion);
                         measureCard ();
+                        break;
+                    case 5:
+                        OVERLAY.setTypeface (iceberg);
+                        measureCard ();
+                        break;
+                    case 6:
+                        OVERLAY.setTypeface (Typeface.MONOSPACE);
+                        measureCard ();
+                        break;
+                    case 7:
+                        OVERLAY.setTypeface (Typeface.SANS_SERIF);
+                        measureCard ();
+                        break;
                     default:
                         //
 
@@ -333,6 +362,7 @@ public class MainActivity extends AppCompatActivity {
                         overlayCard.setTranslationX ((float)value/100 * x);
                         defValueX = (float)value/100 * x;
                     }
+
             }
 
             @Override
@@ -375,8 +405,9 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
+                if(!isTimerActive){
                 int min = Integer.parseInt (timeText.getText ().toString ());
-                startTimer (min);
+                startTimer (min);}
             }
         });
         end.setOnClickListener (new View.OnClickListener () {
@@ -388,13 +419,16 @@ public class MainActivity extends AppCompatActivity {
         pausePlay.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                if (pausePlay.getText ().toString ().equals ("\t Pause \t")) {
-                    pausePlay.setText ("\t Play \t");
-                    pauseTimer ();
-                } else {
-                    pausePlay.setText ("\t Pause \t");
-                    resumeTimer ();
-                }
+
+                if (isTimerActive){
+                    if (pausePlay.getText ().toString ().equals ("\t Pause \t")) {
+                        pausePlay.setText ("\t Play \t");
+                        pauseTimer ();
+                    } else {
+                        pausePlay.setText ("\t Pause \t");
+                        resumeTimer ();
+                    }
+            }
             }
         });
 
@@ -403,25 +437,27 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 saveText ();
                 OVERLAY.setText (overlayText.getText ().toString ());
-
             }
         });
 
         startCT.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                startCTimer ();
+                if(initTime == 0){
+                startCTimer ();}
             }
         });
         pausePlayCT.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                if (pausePlayCT.getText ().toString ().equals ("\t Pause \t")) {
-                    pausePlayCT.setText ("\t Play \t");
-                    pauseCTimer ();
-                } else {
-                    pausePlayCT.setText ("\t Pause \t");
-                    playCT ();
+                if(initTime != 0) {
+                    if (pausePlayCT.getText ().toString ().equals ("\t Pause \t")) {
+                        pausePlayCT.setText ("\t Play \t");
+                        pauseCTimer ();
+                    } else {
+                        pausePlayCT.setText ("\t Pause \t");
+                        playCT ();
+                    }
                 }
             }
         });
@@ -431,9 +467,24 @@ public class MainActivity extends AppCompatActivity {
                 endCT ();
             }
         });
+
+        bgC.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                colorPickerB ();
+            }
+        });
+
+        tC.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                colorPickerT ();
+            }
+        });
     }
 
-///////////////////////////////////////////////////////END OF onCREATE////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////END OF onCREATE////////////////////////////////////////////////////////
     //Write Overlay Text to Memory
     public void saveText() {
         String overlayTextString = overlayText.getText ().toString ();
@@ -484,7 +535,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     private static int REQUEST_CODE = 1;
 
     private void grantPermission() {
@@ -511,7 +561,6 @@ public class MainActivity extends AppCompatActivity {
         xSeekBar.setEnabled (false);
         ySeekBar.setEnabled (false);
     }
-
     private void notDisabled() {
         overlayTpeSpinner.setEnabled (true);
         fontSpinner.setEnabled (true);
@@ -535,13 +584,11 @@ public class MainActivity extends AppCompatActivity {
             enable.setEnabled (false);
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause ();
         savePreferences ();
     }
-
     private void initialization() {
         card0 = findViewById (R.id.card_00);
         card2 = findViewById (R.id.card_02);
@@ -588,37 +635,44 @@ public class MainActivity extends AppCompatActivity {
         amita = ResourcesCompat.getFont (this, R.font.amita_bold);
         comfortaa = ResourcesCompat.getFont (this, R.font.comfortaa_bold);
         damion = ResourcesCompat.getFont (this, R.font.damion);
+        iceberg = ResourcesCompat.getFont (this, R.font.iceberg);
+        archi = ResourcesCompat.getFont (this, R.font.architects_daughter);
 
         startCT = findViewById (R.id.startCT);
         pausePlayCT = findViewById (R.id.pause_playCT);
         endCT = findViewById (R.id.endCT);
         handler = new Handler ();
         card2b =findViewById (R.id.card_02b);
-    }
 
+        bgC = findViewById (R.id.bgC);
+        tC  = findViewById (R.id.tC);
+    }
     private void checkNLoadPreferences() {
         Map<String, ?> allValues = VALUES.getAll ();
         if (allValues.isEmpty ()) {
             disabled ();
-        } else {
+        }
+        else {
             ySeekBar.setProgress (VALUES.getInt ("Y_BAR_VALUE" , 0));
             xSeekBar.setProgress (VALUES.getInt ("X_BAR_VALUE" , 0));
             overlayTpeSpinner.setSelection (VALUES.getInt ("OVERLAY_TYPE_VALUE" , 0));
             fontSpinner.setSelection (VALUES.getInt ("FONT_VALUE" , 0));
             fontSizeSpinner.setSelection (VALUES.getInt ("FONT_SIZE_VALUE" , 0));
             boolean temp = VALUES.getBoolean ("ENABLE_VALUE" , true);
-            overlayCard.setTranslationX (VALUES.getFloat ("DEFAULT_XPOS", 0));
-            overlayCard.setTranslationY (VALUES.getFloat ("DEFAULT_YPOS", 0));
+            defValueX = VALUES.getFloat ("DEFAULT_XPOS", 0);
+            defValueY = VALUES.getFloat ("DEFAULT_YPOS", 0);
+            dColorT = VALUES.getInt ("TEXT_COLOR", 0);
+            dColor = VALUES.getInt ("BG_COLOR", R.attr.cardBgColor);
+
             if (temp) {
                 enable.setChecked (true);
-            } else {
-                enable.setChecked (false);
             }
+            else {
+                enable.setChecked (false);}
             xVal.setText (VALUES.getInt ("X_BAR_VALUE" , 0) + "%");
             yVal.setText (VALUES.getInt ("Y_BAR_VALUE" , 0) + "%");
-        }
+                    }
     }
-
     private void savePreferences() {
         SharedPreferences.Editor valuesEditor = VALUES.edit ();
         valuesEditor.putInt ("Y_BAR_VALUE" , yBarValue);
@@ -629,11 +683,13 @@ public class MainActivity extends AppCompatActivity {
         valuesEditor.putInt ("FONT_VALUE" , fontVal);
         valuesEditor.putFloat ("DEFAULT_XPOS", defValueX);
         valuesEditor.putFloat ("DEFAULT_YPOS", defValueY);
+        valuesEditor.putInt ("BG_COLOR", dColor);
+        valuesEditor.putInt ("TEXT_COLOR", dColorT);
         valuesEditor.apply ();
     }
 
     private void startTimer(long min) {
-        countDowITimer = new CountDownTimer (min * 60 * 1000 , 1000) {
+        countDownTimer = new CountDownTimer (min * 60 * 1000 , 1000) {
             @Override
             public void onTick(long l) {
                 pausedTime = l;
@@ -651,18 +707,18 @@ public class MainActivity extends AppCompatActivity {
                 isTimerActive = false;
             }
         };
-        countDowITimer.start ();
+        countDownTimer.start ();
         isTimerActive = true;
     }
 
     private void pauseTimer() {
-        countDowITimer.cancel ();
-        isTimerActive = false;
+        countDownTimer.cancel ();
+       // isTimerActive = false;
     }
 
     private void resumeTimer() {
-        if (! isTimerActive) {
-            countDowITimer = new CountDownTimer (pausedTime , 1000) {
+//        if (! isTimerActive) {
+            countDownTimer = new CountDownTimer (pausedTime , 1000) {
                 @Override
                 public void onTick(long l) {
                     pausedTime = l;
@@ -679,15 +735,16 @@ public class MainActivity extends AppCompatActivity {
                     isTimerActive = false;
                 }
             };
-            countDowITimer.start ();
+            countDownTimer.start ();
             isTimerActive = true;
-        }
+//        }
     }
 
     private void endTimer() {
-        countDowITimer.cancel ();
+        countDownTimer.cancel ();
         pausedTime = 0;
         OVERLAY.setText ("00:00:00");
+        isTimerActive = false;
     }
 
     private double[] getScreenSize() {
@@ -700,22 +757,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showOverlay(View view) {
-
-        if(!isThereOverlay) {
-            windowManager = (WindowManager) getSystemService (WINDOW_SERVICE);
-
-
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams (
                         WindowManager.LayoutParams.MATCH_PARENT ,
                         WindowManager.LayoutParams.MATCH_PARENT ,
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY ,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE ,
                         PixelFormat.TRANSLUCENT);
-
                 windowManager.addView (view , layoutParams);
                 isThereOverlay = true;
-
-        }
     }
 
     private void removeOverlay(View view) {
@@ -738,9 +787,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCTimer(){
+        initTime = 0;
         handler.post (new Runnable () {
             @Override
             public void run() {
+
                 initTime++;
                int hours = initTime/3600;
                 int minutes = (initTime/3600)%60;
@@ -776,5 +827,42 @@ public class MainActivity extends AppCompatActivity {
         initTime= 0;
         timeElapsed ="00:00:00";
         OVERLAY.setText (timeElapsed);
+    }
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState ) {
+        super.onSaveInstanceState (outState );
+
+        outState.putBoolean ("isThereOverlay", isThereOverlay);
+    }
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState (savedInstanceState);
+
+        isThereOverlay = savedInstanceState.getBoolean ("isThereOverlay");
+    }
+
+    private void colorPickerT(){
+        AmbilWarnaDialog ambilWarnaDialog = new AmbilWarnaDialog (this , dColorT , new AmbilWarnaDialog.OnAmbilWarnaListener () {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {}
+            @Override
+            public void onOk(AmbilWarnaDialog dialog , int color) {
+            dColorT = color;
+            OVERLAY.setTextColor (color);
+            }
+        });
+        ambilWarnaDialog.show ();
+    }
+    private void colorPickerB(){
+        AmbilWarnaDialog ambilWarnaDialog = new AmbilWarnaDialog (this , dColor , new AmbilWarnaDialog.OnAmbilWarnaListener () {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {}
+            @Override
+            public void onOk(AmbilWarnaDialog dialog , int color) {
+                dColor = color;
+                overlayCard.setCardBackgroundColor (color);
+            }
+        });
+        ambilWarnaDialog.show ();
     }
 }
