@@ -65,7 +65,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="8dp"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:text="@string/permissions"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -104,7 +104,7 @@
                                 android:layout_marginLeft="4dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingRight="10dp"
                                 android:text="@string/enable"
                                 android:textSize="18sp"
@@ -126,7 +126,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="4dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingRight="10dp"
                                 android:text="@string/overlay_type"
                                 android:textSize="18sp"
@@ -142,7 +142,7 @@
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/comfortaa_bold" />
+                                android:fontFamily="@font/abel" />
 
                         </LinearLayout>
 
@@ -159,7 +159,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="4dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingRight="10dp"
                                 android:text="@string/font_type"
                                 android:textSize="18sp"
@@ -173,7 +173,7 @@
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/comfortaa_bold" />
+                                android:fontFamily="@font/abel" />
 
                         </LinearLayout>
 
@@ -190,7 +190,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="4dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingRight="10dp"
                                 android:text="@string/fontSize"
                                 android:textSize="18sp"
@@ -205,7 +205,7 @@
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/comfortaa_bold" />
+                                android:fontFamily="@font/abel" />
 
                         </LinearLayout>
                         <LinearLayout
@@ -222,7 +222,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="12dp"
                                 android:background="?attr/btnColor"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingBottom="4dp"
                                 android:paddingLeft="10dp"
                                 android:text="@string/tC"
@@ -230,6 +230,7 @@
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
 
+                            <!--suppress AndroidDomInspection -->
                             <TextView
                                 android:id="@+id/bgC"
                                 android:layout_width="wrap_content"
@@ -237,7 +238,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="12dp"
                                 android:background="?attr/btnColor"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingBottom="4dp"
                                 android:text="@string/bgC"
                                 android:textColor="?attr/android:textColor"
@@ -285,7 +286,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:ems="10"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:inputType="number"
 
                             android:maxLength="3"
@@ -300,7 +301,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="20dp"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:text="@string/mins"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -322,7 +323,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_margin="12dp"
                             android:background="?attr/btnColor"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:paddingBottom="4dp"
                       android:paddingLeft="10dp"
                             android:text="@string/start"
@@ -337,7 +338,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_margin="12dp"
                             android:background="?attr/btnColor"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:paddingBottom="4dp"
                             android:text="@string/Pause"
                             android:textColor="?attr/android:textColor"
@@ -351,7 +352,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_margin="12dp"
                             android:paddingBottom="4dp"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:text="@string/Stop"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -400,7 +401,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="20dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:text="@string/cT"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -422,7 +423,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="12dp"
                                 android:background="?attr/btnColor"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingBottom="4dp"
                                 android:text="@string/start"
                                 android:textColor="?attr/android:textColor"
@@ -436,7 +437,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="12dp"
                                 android:background="?attr/btnColor"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:paddingBottom="4dp"
                                 android:text="@string/Pause"
                                 android:textColor="?attr/android:textColor"
@@ -450,7 +451,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="12dp"
                                 android:paddingBottom="4dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:text="@string/Stop"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
@@ -496,7 +497,7 @@
                             android:layout_height="wrap_content"
 
                             android:layout_marginLeft="8dp"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:text="@string/overlay_text"
                             android:textSize="18sp"
                             android:maxLength="40"
@@ -513,7 +514,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_margin="12dp"
                             android:background="?attr/btnColor"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:paddingBottom="4dp"
                             android:text="@string/save"
                             android:textColor="?attr/android:textColor"
@@ -532,6 +533,7 @@
                     app:cardBackgroundColor="?attr/cardBgColor"
                     app:cardCornerRadius="25dp"
                     android:paddingBottom="10dp"
+                    android:layout_marginBottom="10dp"
                     app:cardElevation="1dp">
 
                     <LinearLayout
@@ -546,7 +548,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="19dp"
                             android:layout_marginTop="10dp"
-                            android:fontFamily="@font/comfortaa_bold"
+                            android:fontFamily="@font/abel"
                             android:text="@string/position"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -565,7 +567,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="4dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:text="@string/X"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -585,7 +587,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:text="@string/xvalue"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
@@ -608,7 +610,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="4dp"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:text="@string/Y"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -628,7 +630,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:fontFamily="@font/comfortaa_bold"
+                                android:fontFamily="@font/abel"
                                 android:text="@string/yvalue"
                                 android:textSize="18sp"
                                 android:textStyle="bold"

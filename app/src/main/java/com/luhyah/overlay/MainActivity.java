@@ -9,7 +9,9 @@ package com.luhyah.overlay;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.util.TimeUtils;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -27,12 +29,14 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -47,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -91,10 +96,11 @@ public class MainActivity extends AppCompatActivity {
     private  TextView startCT, pausePlayCT, endCT;
     private Handler handler;
 
-    private int initTime = 0;
+    private long initTime = 0;
     private  String timeElapsed;
     private TextView bgC, tC;
     private int dColor, dColorT;
+    private RelativeLayout oRL;
 
     /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
@@ -111,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         View overlayView = inflater.inflate (R.layout.overlayout , null);
         OVERLAY = overlayView.findViewById (R.id.overlaidText);
         overlayCard = overlayView.findViewById (R.id.overlayCard);
+        oRL = overlayView.findViewById (R.id.relativeLayout);
+
         dColor = R.attr.cardBgColor;
         dColorT = 0;
 //        overlayCard.setCardBackgroundColor (dColor);
@@ -143,10 +151,11 @@ public class MainActivity extends AppCompatActivity {
             showOverlay (overlayView);
             overlayCard.setTranslationY (defValueY);
             overlayCard.setTranslationX (defValueX);
+            overlayCard.setCardBackgroundColor (dColor);
+            OVERLAY.setTextColor (dColorT);
         } else {
             disabled ();
             isThereOverlay = false;
-
         }
         enable.setOnCheckedChangeListener (new CompoundButton.OnCheckedChangeListener () {
             @Override
@@ -158,7 +167,8 @@ public class MainActivity extends AppCompatActivity {
                     overlayCard.setTranslationX (defValueX);
                     showOverlay (overlayView);
                     isThereOverlay = true;
-
+                    overlayCard.setCardBackgroundColor (dColor);
+                    OVERLAY.setTextColor (dColorT);
                 } else {
                     disabled ();
                    removeOverlay (overlayView);
@@ -208,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     card2.setVisibility (View.GONE);
                     card2b.setVisibility (View.GONE);
                     measureCard ();
+                    adjustCardView ();
                     if (countDownTimer != null) {
                         pauseTimer ();
                         pausePlay.setText ("\t Play \t");
@@ -471,18 +482,17 @@ public class MainActivity extends AppCompatActivity {
         bgC.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                colorPickerB ();
+                if(enabledVal){colorPickerB ();}
             }
         });
 
         tC.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                colorPickerT ();
+                if(enabledVal){colorPickerT ();}
             }
         });
     }
-
 
     ///////////////////////////////////////////////////////END OF onCREATE////////////////////////////////////////////////////////
     //Write Overlay Text to Memory
@@ -793,10 +803,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
 
                 initTime++;
-               int hours = initTime/3600;
-                int minutes = (initTime/3600)%60;
-               int seconds = initTime%60;
-
+                long hours=  TimeUnit.SECONDS.toHours (initTime);
+                long remainder = initTime - TimeUnit.HOURS.toSeconds (hours);
+                long minutes = TimeUnit.SECONDS.toMinutes (remainder);
+                long seconds = remainder - TimeUnit.MINUTES.toSeconds (minutes);
                 timeElapsed = String.format (Locale.getDefault () , "%02d:%02d:%02d" , hours , minutes , seconds);
                 OVERLAY.setText (timeElapsed);
                 handler.postDelayed (this, 1000);
@@ -811,9 +821,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 initTime++;
-                int hours = initTime/3600;
-                int minutes = (initTime/3600)%60;
-                int seconds = initTime%60;
+                long hours=  TimeUnit.SECONDS.toHours (initTime);
+                long remainder = initTime - TimeUnit.HOURS.toSeconds (hours);
+                long minutes = TimeUnit.SECONDS.toMinutes (remainder);
+                long seconds = remainder - TimeUnit.MINUTES.toSeconds (minutes);
 
                 timeElapsed = String.format (Locale.getDefault () , "%02d:%02d:%02d" , hours , minutes , seconds);
                 OVERLAY.setText (timeElapsed);
@@ -848,7 +859,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onOk(AmbilWarnaDialog dialog , int color) {
             dColorT = color;
-            OVERLAY.setTextColor (color);
+            OVERLAY.setTextColor (dColorT);
             }
         });
         ambilWarnaDialog.show ();
@@ -860,9 +871,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onOk(AmbilWarnaDialog dialog , int color) {
                 dColor = color;
-                overlayCard.setCardBackgroundColor (color);
+                overlayCard.setCardBackgroundColor (dColor);
             }
         });
         ambilWarnaDialog.show ();
+    }
+    private void adjustCardView(){
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams (
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        oRL.setLayoutParams (layoutParams);
+
     }
 }
