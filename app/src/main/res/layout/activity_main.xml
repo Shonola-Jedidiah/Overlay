@@ -288,7 +288,6 @@
                             android:ems="10"
                             android:fontFamily="@font/abel"
                             android:inputType="number"
-
                             android:maxLength="3"
                             android:text="30"
                             android:textSize="18sp"
@@ -500,7 +499,7 @@
                             android:fontFamily="@font/abel"
                             android:text="@string/overlay_text"
                             android:textSize="18sp"
-                            android:maxLength="40"
+                            android:maxLength="100"
                             android:maxLines="1"
                             android:inputType="text"
                             android:textStyle="bold" />
