@@ -8,12 +8,15 @@
 package com.luhyah.overlay;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.util.TimeUtils;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
@@ -36,6 +39,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -83,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     private long pausedTime;
     private boolean isTimerActive;
     private WindowManager windowManager;
-    private boolean isThereOverlay;
 
     private  TextView OVERLAY;
     private  String timeLeft;
@@ -101,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView bgC, tC;
     private int dColor, dColorT;
     private RelativeLayout oRL;
+    private ImageView infoImage;
+    private AlertDialog.Builder alert;
+    private NotificationCompat.Builder notification;
+    private View overlayView;
 
     /*--------------------------------------onCREATE---------------------------------------------------*/
     @SuppressLint("ResourceAsColor")
@@ -109,20 +116,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
         VALUES = getSharedPreferences (SharedPref , MODE_PRIVATE);
-        /*----------------------------------------------------------------*/
+        /*-----------------------INITIALIZATION-----------------------------------------*/
         windowManager = (WindowManager) getSystemService (WINDOW_SERVICE);
         isTimerActive = false;
         initialization ();
         LayoutInflater inflater = (LayoutInflater) getSystemService (LAYOUT_INFLATER_SERVICE);
-        View overlayView = inflater.inflate (R.layout.overlayout , null);
+        overlayView = inflater.inflate (R.layout.overlayout , null);
         OVERLAY = overlayView.findViewById (R.id.overlaidText);
         overlayCard = overlayView.findViewById (R.id.overlayCard);
         oRL = overlayView.findViewById (R.id.relativeLayout);
 
-        dColor = R.attr.cardBgColor;
+        LayoutInflater toolbarInflater = (LayoutInflater) getSystemService (LAYOUT_INFLATER_SERVICE);
+        View toolbarView = toolbarInflater.inflate (R.layout.toolbar, null);
+        infoImage = findViewById (R.id.info);
+        alert = new AlertDialog.Builder (this);
+        dColor = 0;
         dColorT = 0;
-//        overlayCard.setCardBackgroundColor (dColor);
-//        OVERLAY.setTextColor (dColorT);
+        if(dColor!=0){overlayCard.setCardBackgroundColor (dColor);}
+        if(dColorT!=0){OVERLAY.setTextColor (dColorT);}
         /*----------------------------------------------------------------*/
 
         /*==========================================================================*/
@@ -148,14 +159,15 @@ public class MainActivity extends AppCompatActivity {
         enabledVal = enable.isChecked ();
         if (enable.isChecked ()) {
             notDisabled ();
-            showOverlay (overlayView);
+           showOverlay (overlayView);
             overlayCard.setTranslationY (defValueY);
             overlayCard.setTranslationX (defValueX);
-            overlayCard.setCardBackgroundColor (dColor);
-            OVERLAY.setTextColor (dColorT);
+
+            if(dColor!=0){overlayCard.setCardBackgroundColor (dColor);}
+            if(dColorT!=0
+            ){OVERLAY.setTextColor (dColorT);}
         } else {
             disabled ();
-            isThereOverlay = false;
         }
         enable.setOnCheckedChangeListener (new CompoundButton.OnCheckedChangeListener () {
             @Override
@@ -166,13 +178,11 @@ public class MainActivity extends AppCompatActivity {
                     overlayCard.setTranslationY (defValueY);
                     overlayCard.setTranslationX (defValueX);
                     showOverlay (overlayView);
-                    isThereOverlay = true;
-                    overlayCard.setCardBackgroundColor (dColor);
-                    OVERLAY.setTextColor (dColorT);
+                    if(dColor!=0){overlayCard.setCardBackgroundColor (dColor);}
+                    if(dColorT!=0){OVERLAY.setTextColor (dColorT);}
                 } else {
                     disabled ();
                    removeOverlay (overlayView);
-                   isThereOverlay = false;
                 }
             }
         });
@@ -180,10 +190,7 @@ public class MainActivity extends AppCompatActivity {
         overlayTypeVal = overlayTpeSpinner.getSelectedItemPosition ();
         measureCard ();
 
-
-
         overlayTpeSpinner.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener () {
-
             @Override
             public void onItemSelected(AdapterView<?> adapterView , View view , int i , long l) {
 
@@ -448,6 +455,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 saveText ();
                 OVERLAY.setText (overlayText.getText ().toString ());
+                measureCard ();
             }
         });
 
@@ -492,6 +500,27 @@ public class MainActivity extends AppCompatActivity {
                 if(enabledVal){colorPickerT ();}
             }
         });
+        infoImage.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                alert.setTitle ("About Overlay")
+                        .setMessage ("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla libero lectus, eleifend nec ex nec")
+                        .setCancelable (true)
+                        .setPositiveButton ("OK" , new DialogInterface.OnClickListener () {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface , int i) {
+                                dialogInterface.cancel ();
+                            }
+                        })
+                        .show ();
+            }
+        });
+
+//        notification = new NotificationCompat.Builder (this)
+//                .setSmallIcon (R.drawable.icon_dark)
+//                .setContentTitle (overlayTpeSpinner.getSelectedItem ().toString ())
+//                .setContentText (OVERLAY.getText ())
+//                .setPriority (NotificationCompat.PRIORITY_HIGH);
     }
 
     ///////////////////////////////////////////////////////END OF onCREATE////////////////////////////////////////////////////////
@@ -772,16 +801,15 @@ public class MainActivity extends AppCompatActivity {
                         WindowManager.LayoutParams.MATCH_PARENT ,
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY ,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE ,
-                        PixelFormat.TRANSLUCENT);
+                        PixelFormat.TRANSPARENT);
                 windowManager.addView (view , layoutParams);
-                isThereOverlay = true;
+
     }
 
     private void removeOverlay(View view) {
         windowManager = (WindowManager) getSystemService (WINDOW_SERVICE);
         if(windowManager != null){
         windowManager.removeView (view);
-        isThereOverlay = false;
         }
     }
 
@@ -839,18 +867,7 @@ public class MainActivity extends AppCompatActivity {
         timeElapsed ="00:00:00";
         OVERLAY.setText (timeElapsed);
     }
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState ) {
-        super.onSaveInstanceState (outState );
 
-        outState.putBoolean ("isThereOverlay", isThereOverlay);
-    }
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState (savedInstanceState);
-
-        isThereOverlay = savedInstanceState.getBoolean ("isThereOverlay");
-    }
 
     private void colorPickerT(){
         AmbilWarnaDialog ambilWarnaDialog = new AmbilWarnaDialog (this , dColorT , new AmbilWarnaDialog.OnAmbilWarnaListener () {
@@ -871,7 +888,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onOk(AmbilWarnaDialog dialog , int color) {
                 dColor = color;
-                overlayCard.setCardBackgroundColor (dColor);
+                if(dColor!=0){overlayCard.setCardBackgroundColor (dColor);}
             }
         });
         ambilWarnaDialog.show ();
@@ -882,5 +899,13 @@ public class MainActivity extends AppCompatActivity {
         );
         oRL.setLayoutParams (layoutParams);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy ();
+        if(enabledVal){
+            removeOverlay (overlayView);
+        }
     }
 }
